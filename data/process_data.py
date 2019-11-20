@@ -1,16 +1,53 @@
 import sys
-
+import numpy as np
+import pandas as pd
+from sqlalchemy import create_engine
+import os
 
 def load_data(messages_filepath, categories_filepath):
-    pass
+    """
+    """
 
+    # Load datasets
+    messages = pd.read_csv(messages_filepath)
+    categories = pd.read_csv(categories_filepath)
+
+    # Merge datasets
+    df = pd.merge(messages, categories, on='id')
+
+    return df
 
 def clean_data(df):
-    pass
+    """
+    """
 
+    # Create a dataframe with a column for each individual category
+    categories = df.categories.str.split(';', expand=True)
+
+    # Use first row to extract and rename column names
+    categories.columns = categories.iloc[0].apply(lambda x: x[:-2])
+
+    # Set and convert last character as a numeric value
+    for column in categories:
+        categories[column] = categories[column].str[-1].astype(np.int)
+
+    # Drop original `categories` column from `df`
+    df.drop(columns='categories', inplace=True)
+
+    # Concat `df` with the new `categories` dataframe
+    df = pd.concat([df, categories], axis=1)
+
+    # Drop duplicates
+    df.drop_duplicates(inplace=True)
+
+    return df
 
 def save_data(df, database_filename):
-    pass  
+    """
+    """
+
+    engine = create_engine(os.path.join('sqlite:///', database_filename))
+    df.to_sql('Messages', engine, index=False)
 
 
 def main():
@@ -24,12 +61,12 @@ def main():
 
         print('Cleaning data...')
         df = clean_data(df)
-        
+
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
-        
+
         print('Cleaned data saved to database!')
-    
+
     else:
         print('Please provide the filepaths of the messages and categories '\
               'datasets as the first and second argument respectively, as '\
