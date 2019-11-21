@@ -8,11 +8,11 @@ def load_data(messages_filepath, categories_filepath):
     """
     """
 
-    # Load datasets
+    # Load csv files into DataFrames
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
 
-    # Merge datasets
+    # Merge DataFrames
     df = pd.merge(messages, categories, on='id')
 
     return df
@@ -21,7 +21,7 @@ def clean_data(df):
     """
     """
 
-    # Create a dataframe with a column for each individual category
+    # Create dataframe with column for each individual category
     categories = df.categories.str.split(';', expand=True)
 
     # Use first row to extract and rename column names
@@ -46,7 +46,10 @@ def save_data(df, database_filename):
     """
     """
 
+    # Create engine for SQLite database
     engine = create_engine(os.path.join('sqlite:///', database_filename))
+
+    # Export DataFrame as database table
     df.to_sql('Messages', engine, index=False)
 
 
