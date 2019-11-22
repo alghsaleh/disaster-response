@@ -6,6 +6,13 @@ import os
 
 def load_data(messages_filepath, categories_filepath):
     """
+    Load and merge messages and categories datasets
+
+    INPUT:
+        messages_filepath: str -- pathfile to messages dataset
+        categories_filepath: str -- pathfile to categories dataset
+    OUTPUT:
+        df: DataFrame -- merged dataset
     """
 
     # Load csv files into DataFrames
@@ -19,6 +26,14 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     """
+    Clean DataFrame by expanding categories, converting them to binary values,
+    and removing duplicates, and all-zeros, and uncertainty in columns and rows
+
+    INPUT:
+        df: DataFrame -- merged dataset
+
+    OUTPUT:
+        df: DataFrame -- cleaned dataset
     """
 
     # Create dataframe with column for each individual category
@@ -50,6 +65,14 @@ def clean_data(df):
 
 def save_data(df, database_filename):
     """
+    Export cleaned dataset as an SQLite database
+
+    INPUT:
+        df: dataframe -- cleaned dataset
+        database_filename: str -- filename for output database
+
+    OUTPUT:
+        None
     """
 
     # Create engine for SQLite database

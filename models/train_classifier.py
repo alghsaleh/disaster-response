@@ -24,6 +24,15 @@ from sklearn.metrics import classification_report, precision_recall_fscore_suppo
 
 def load_data(database_filepath):
     """
+    Load processed SQLite database and
+    split it into features and targets DataFrames
+
+    INPUT:
+        database_filepath: str -- filepath of input SQLite database
+
+    OUTPUT:
+        X, y: DataFrame -- features and targets respectively
+        category_names: array -- target column names (labels)
     """
 
     # Create engine for SQLite database
@@ -44,6 +53,14 @@ def load_data(database_filepath):
 
 def tokenize(text, url_regex='http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'):
     """
+    Normalize, tokenize, and lemmatize text
+
+    INPUT:
+        text: str -- text messages in english used for processing
+        url_regex: str -- regex to detect URLs
+
+    OUTPUT:
+        tokens: list -- normalized, tokenized, and lemmatized text
     """
 
     # Replace URLs with `urlplaceholder` in text
@@ -71,6 +88,14 @@ def tokenize(text, url_regex='http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(
 
 def build_model():
     """
+    Build machine learning pipeline that transforms data and
+    creates GridSearchCV object by finding best parameters
+
+    INPUT:
+        None
+
+    OUTPUT:
+        model: model object -- optimized model object via GridSearchCV
     """
 
     # Create and instantiate pipeline
@@ -96,6 +121,15 @@ def build_model():
 
 def evaluate_model(model, X_test, Y_test, category_names):
     """
+    Calculate and display precision, recall and F1 score for trained model
+
+    INPUT:
+        model: model object -- trained and optimized model object
+        X_test, y_test: DataFrame -- testing data for features and targets respectively
+        category_names: array -- target column names (labels)
+
+    OUTPUT:
+        None
     """
 
     # Predict on test data using trained classifier
@@ -127,6 +161,14 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 def save_model(model, model_filepath):
     """
+    Export trained and optimized model as a pickle file
+
+    INPUT:
+        model: model object -- trained and optimized model object
+        model_filepath: str -- filepath for output pickle file
+
+    OUTPUT:
+        None
     """
 
     # Export model as pickle file
