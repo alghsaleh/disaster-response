@@ -31,6 +31,9 @@ def clean_data(df):
     for column in categories:
         categories[column] = categories[column].str[-1].astype(np.int)
 
+    # Drop 'child_alone' column because it only contains zeros
+    categories.drop(columns='child_alone', inplace=True)
+
     # Drop original `categories` column from `df`
     df.drop(columns='categories', inplace=True)
 
@@ -39,6 +42,9 @@ def clean_data(df):
 
     # Drop duplicates
     df.drop_duplicates(inplace=True)
+
+    # Drop rows where `related` = 2 indicating non-english language
+    df = df[df['related'] != 2]
 
     return df
 
@@ -50,7 +56,7 @@ def save_data(df, database_filename):
     engine = create_engine(os.path.join('sqlite:///', database_filename))
 
     # Export DataFrame as database table
-    df.to_sql('Messages', engine, index=False)
+    df.to_sql('Messages', engine, index=False, if_exists='replace')
 
 
 def main():
